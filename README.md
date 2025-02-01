@@ -51,7 +51,7 @@ git clone https://github.com/HC36d/Darkos-selfbot.git && cd Darkos-selfbot && py
 - help command 
 - Command execution in private chats
 - And more!
-
+---
 ## Requirements
 Before you start, make sure you have the following installed:
 - Python 3.8 or higher
