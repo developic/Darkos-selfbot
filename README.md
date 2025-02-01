@@ -26,11 +26,24 @@ Stay up-to-date with everything happening in the community:
 - Live updates 🔴
 - help also 
 ---
+## Installation
 
-## 🎉 **Let’s Chat, Help, and Build Together!**
-We’re excited to have you onboard. Feel free to say **hello** in the **introductions** channel when you join! ✨  
-The more, the merrier! 😄
+### 1. Clone the repository
 
+<br/>
+## windows and Linux 
+Start by cloning the repository to your local machine:
+```
+git clone https://github.com/HC36d/Darkos-selfbot.git && cd Darkos-selfbot && python setup.py
+```
+> make sure that both python and git was installed properly
+
+## Android or Termux 
+```
+  pkg update && pkg upgrade -y && termux-setup-storage && pkg install python -y && pkg install git -y && pkg install espeak -y && cd storage/downloads && git clone https://github.com/HC36d/Darkos-selfbot.git  && cd Darkos-selfbot && python setup.py
+  ```
+  > Make sure to install termux  from fdroid or github.
+ 
 ---
 ## Features
 - fun command 
@@ -44,14 +57,5 @@ Before you start, make sure you have the following installed:
 - Python 3.8 or higher
 - `pip` (Python's package installer)
 - Discord account (selfbot should be used on your own account only)
+---
 
-## Installation
-
-### 1. Clone the repository
-
-## windows
-Start by cloning the repository to your local machine:
-```bash
-git clone https://github.com/your-username/selfbot.git && cd owo-dusk && python setup.py ````
-
-make sure that both python and git was installed properly
