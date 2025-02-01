@@ -20,7 +20,7 @@ Here you can get **help**, **discuss new features**, and interact with an amazin
 ### 🔥 **Join Now & Be Part of the Revolution!**
 
 <br/>
-  <a href="https://discord.gg/Sr74znUj"><img src="https://invidget.switchblade.xyz/hDDrKhWPqr" alt="Discord Invite"/> </a>
+  <a href="https://discord.gg/Sr74znUj"><img src="https://invidget.switchblade.xyz/Sr74znUj" alt="Discord Invite"/> </a>
   <br/>
 > 🚨 **Warning:** Make sure to **follow the server rules** and use the selfbot responsibly. Violating the rules may result in **temporary or permanent bans**.
 
