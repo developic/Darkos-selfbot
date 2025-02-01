@@ -13,11 +13,11 @@ class ClearMessages(commands.Cog):
             return
 
         deleted_count = 0
-        async for message in ctx.channel.history(limit=100):  # Fetch recent 100 messages
-            if message.author.id == self.bot.user.id:  # Check if the message is from the bot user
+        async for message in ctx.channel.history(limit=100): 
+            if message.author.id == self.bot.user.id:  
                 await message.delete()
                 deleted_count += 1
-                if deleted_count == 20:  # Stop after deleting 20 messages
+                if deleted_count == 20:
                     break
 
         await ctx.send(f"Deleted {deleted_count} messages sent by you.", delete_after=5)

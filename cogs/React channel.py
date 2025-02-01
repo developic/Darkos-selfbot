@@ -25,7 +25,7 @@ class ChannelReact(commands.Cog):
     @commands.group(name="rc", aliases=["channelreact"], invoke_without_command=True)
     async def channelreact(self, ctx):
         """Base command for channel-react."""
-        await ctx.send("Use `!rc add`, `!rc remove`, or `!rc list`.")
+        await ctx.send("Use `!rc add [emoji] [channel ID] `, `!rc remove [channel ID]`, or `!rc list`.")
 
     @channelreact.command(name="add")
     async def add_channelreact(self, ctx, emoji: str, channel_id: int):

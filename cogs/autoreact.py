@@ -26,7 +26,7 @@ class AutoReact(commands.Cog):
     @commands.group(name="ar", aliases=["autoreact"], invoke_without_command=True)
     async def autoreact(self, ctx):
         """Base command for auto-react."""
-        await ctx.send("Use `!ar add`, `!ar remove`, or `!ar list`.")
+        await ctx.send("Use `!ar add [msg] [emoji] `, `!ar remove [msg]`, or `!ar list`.")
 
     @autoreact.command(name="add")
     async def add_autoreact(self, ctx, trigger: str, emoji: str):
