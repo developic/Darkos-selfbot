@@ -30,9 +30,9 @@ Stay up-to-date with everything happening in the community:
 
 ### 1. Clone the repository
 
-<br/>
 ## windows and Linux 
 Start by cloning the repository to your local machine:
+
 ```
 git clone https://github.com/HC36d/Darkos-selfbot.git && cd Darkos-selfbot && python setup.py
 ```
