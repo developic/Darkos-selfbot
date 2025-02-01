@@ -6,6 +6,13 @@ A Python-based selfbot designed to automate personal tasks for your Discord acco
 [!IMPORTANT]
 > ⚠️🚨 WE ARE NOT responsible if you get banned using our selfbots.
 ---
+## Discord Server
+
+Join our official Discord server to get help, discuss features, and interact with other users!
+
+[![Join the Discord Server](https://img.shields.io/discord/your-discord-server-id.svg?style=for-the-badge&label=Join%20Discord&logo=discord)](https://discord.gg/Sr74znUj)
+
+> **Note**: Make sure to follow the server rules and use the selfbot responsibly!
 
 ---
 ## Features
