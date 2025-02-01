@@ -3,27 +3,18 @@
 A Python-based selfbot designed to automate personal tasks for your Discord account. This selfbot allows you to interact with Discord in various ways, but **please be aware of the potential risks** such as violating Discord's Terms of Service. Use it at your own discretion.
 
 ---
-[!IMPORTANT]
-> ⚠️🚨 WE ARE NOT responsible if you get banned using our selfbots.
+<div style="background-color: #ffcc00; color: black; border-radius: 8px; padding: 15px; font-size: 1.2em; text-align: center; font-weight: bold;">
+
+**⚠️🚨 WE ARE NOT RESPONSIBLE IF YOU GET BANNED USING OUR SELFBOTS.**
+
+</div>
+
 ---
 # 🌟 **Join Our Discord Community!** 🌟
-
-Welcome to the **official Discord server** for our selfbot project! 🚀  
-Here you can get **help**, **discuss new features**, and interact with an amazing community of users who are just as passionate about Discord automation as you are. 😎
-
-### 💬 **Why Join?**
-- **Get instant support** from the developic aka me aka sky .  
-- **Suggest new features** and improvements for the bot.  
-- **Connect with like-minded users** who love customizing their Discord experience.  
-- **Access exclusive updates** and announcements before anyone else!
-
-### 🔥 **Join Now & Be Part of the Revolution!**
 
 <br/>
   <a href="https://discord.gg/Sr74znUj"><img src="https://invidget.switchblade.xyz/Sr74znUj" alt="Discord Invite"/> </a>
   <br/>
-> 🚨 **Warning:** Make sure to **follow the server rules** and use the selfbot responsibly. Violating the rules may result in **temporary or permanent bans**.
-
 ---
 
 ### 📢 **Get Updates!**
@@ -33,7 +24,7 @@ Stay up-to-date with everything happening in the community:
 - New features 🚀
 - Bug fixes 🐞
 - Live updates 🔴
-
+- help also 
 ---
 
 ## 🎉 **Let’s Chat, Help, and Build Together!**
