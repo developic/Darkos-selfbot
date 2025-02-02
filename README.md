@@ -2,6 +2,8 @@
 
 A Python-based selfbot designed to automate personal tasks for your Discord account. This selfbot allows you to interact with Discord in various ways, but **please be aware of the potential risks** such as violating Discord's Terms of Service. Use it at your own discretion.
 
+![GitHub Repo stars](https://img.shields.io/github/stars/HC36d/Darkos-selfbot?style=social)
+
 ---
 <div style="background-color: #ffcc00; color: black; border-radius: 8px; padding: 15px; font-size: 1.2em; text-align: center; font-weight: bold;">
 
