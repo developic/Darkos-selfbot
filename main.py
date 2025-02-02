@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import os
+import signal
 from dotenv import load_dotenv
 import asyncio
 from rich.panel import Panel
@@ -42,6 +43,12 @@ def display_ascii():
        _  /_/ /_  /   / /_/ /_  ,<  / /_/ /(__  ) 
        /_____/ /_/    \__,_/ /_/|_| \____//____/  
                                                   """, justify="center"), style="white", expand=True))
+
+def handle_sigint(signal_number, frame):
+    console.print("\n[bold red]Ctrl+C detected. Stopping bot...[/bold red]")
+    os._exit(0)
+
+signal.signal(signal.SIGINT, handle_sigint)
 
 clear_terminal()
 load_dotenv()
