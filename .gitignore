@@ -2,3 +2,4 @@
 .env
 H.py
 J.py
+__pycache__/
