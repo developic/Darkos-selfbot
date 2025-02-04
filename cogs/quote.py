@@ -9,7 +9,7 @@ class Quote(commands.Cog):
 
     @commands.command(name="quote")
     async def fetch_quote(self, ctx):
-        api_url = "https://hc36d.github.io/Selfbot/quote.json"
+        api_url = "https://hc36d.github.io/api/quote.json"
 
         try:
             response = requests.get(api_url, timeout=5)

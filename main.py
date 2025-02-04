@@ -26,7 +26,7 @@ def get_latest_version(api_url):
         return "0.0.0"
 
 async def check_for_update():
-    latest_version = get_latest_version("https://hc36d.github.io/Selfbot")
+    latest_version = get_latest_version("https://hc36d.github.io/api")
     if compare_versions(CURRENT_VERSION, latest_version):
         display_ascii()
         console.print(Panel(f"[red]A new version ({latest_version}) is available! Please update your bot.[/red]", expand=True))
