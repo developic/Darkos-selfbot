@@ -36,7 +36,7 @@ class Hack(commands.Cog):
         await asyncio.sleep(1)
 
         fake_details = self.generate_fake_details(member)
-        await ctx.send(f"**[EXFIL]** Here are some random details found from {member.name}:\n\n{fake_details}")
+        await ctx.send(f"**[EXFIL]** Here are some details found from {member.name}:\n\n{fake_details}")
 
     def generate_fake_details(self, member):
         fake_names = ["JohnDoe", "JaneSmith", "ChrisEvans", "AnnaTaylor"]
@@ -59,16 +59,8 @@ class Hack(commands.Cog):
         fake_location = random.choice(fake_locations)
         fake_address = random.choice(fake_addresses)
 
-        return f"""
-        - Name: {fake_name}
-        - Email: {fake_email}
-        - IP Address: {fake_ip}
-        - Phone: {fake_phone}
-        - Social Media: {fake_social}
-        - Credit Card: {fake_credit_card}
-        - Device: {fake_device}
-        - Location: {fake_location}
-        - Address: {fake_address}
+        return f"""```Name: {fake_name}\nEmail: {fake_email}\nIP Address: {fake_ip}\nPhone: {fake_phone}\nSocial Media: {fake_social}\nCredit Card: {fake_credit_card}\nDevice: {fake_device}\nLocation: {fake_location}\nAddress: {fake_address}
+        ```
         """
 
     @hack.error

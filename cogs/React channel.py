@@ -1,8 +1,6 @@
 import json
 import os
 from discord.ext import commands
-
-# Path to the JSON file
 DATA_FILE = "./data/channel_react.json"
 
 class ChannelReact(commands.Cog):
@@ -11,25 +9,21 @@ class ChannelReact(commands.Cog):
         self.channel_reacts = self.load_data()
 
     def load_data(self):
-        """Load channel-react data from JSON file."""
         if not os.path.exists(DATA_FILE):
             return {}
         with open(DATA_FILE, "r") as file:
             return json.load(file)
 
     def save_data(self):
-        """Save channel-react data to JSON file."""
         with open(DATA_FILE, "w") as file:
             json.dump(self.channel_reacts, file, indent=4)
 
     @commands.group(name="rc", aliases=["channelreact"], invoke_without_command=True)
     async def channelreact(self, ctx):
-        """Base command for channel-react."""
         await ctx.send("Use `!rc add [emoji] [channel ID] `, `!rc remove [channel ID]`, or `!rc list`.")
 
     @channelreact.command(name="add")
     async def add_channelreact(self, ctx, emoji: str, channel_id: int):
-        """Add an auto-reaction to all messages in a specific channel."""
         channel = self.bot.get_channel(channel_id)
         if not channel:
             await ctx.send("Invalid channel ID. Please provide a valid channel ID.")
@@ -48,7 +42,6 @@ class ChannelReact(commands.Cog):
 
     @channelreact.command(name="remove")
     async def remove_channelreact(self, ctx, channel_id: int):
-        """Remove all auto-reactions for a specific channel."""
         channel = self.bot.get_channel(channel_id)
         if not channel:
             await ctx.send("Invalid channel ID. Please provide a valid channel ID.")
@@ -64,7 +57,7 @@ class ChannelReact(commands.Cog):
 
     @channelreact.command(name="list")
     async def list_channelreacts(self, ctx):
-        """List all channels with auto-reactions."""
+
         if not self.channel_reacts:
             await ctx.send("No auto-reactions are set for any channels.")
             return
@@ -78,7 +71,7 @@ class ChannelReact(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        """Automatically react to messages in configured channels."""
+
         if message.guild is None or message.author.bot:
             return
 
@@ -91,6 +84,5 @@ class ChannelReact(commands.Cog):
                     print(f"Failed to add reaction {emoji} to message: {e}")
 
 async def setup(bot):
-    """Setup function to add the ChannelReact cog."""
     await bot.add_cog(ChannelReact(bot))
 # Auto-comment for React channel.py

@@ -3,7 +3,6 @@ import json
 import os
 from discord.ext import commands
 
-# Path to the JSON file
 DATA_FILE = "./data/react.json"
 
 class AutoReact(commands.Cog):

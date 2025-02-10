@@ -12,11 +12,9 @@ class AvatarBanner(commands.Cog):
         Fetch a user's avatar.
         """
         try:
-            # Send the user's avatar URL
             avatar_url = user.avatar.url
             await ctx.send(f"{user.mention}'s avatar: {avatar_url}")
         except AttributeError:
-            # If the user does not have an avatar
             await ctx.send(f"{user.mention} does not have an avatar.")
 
     @commands.command(name="banner", help="Get a user's banner. Usage: !banner <user>")
@@ -25,7 +23,6 @@ class AvatarBanner(commands.Cog):
         Fetch a user's banner.
         """
         try:
-            # Fetch the user object explicitly to get the banner
             fetched_user = await self.bot.fetch_user(user.id)
             if fetched_user.banner:
                 banner_url = fetched_user.banner.url
@@ -36,8 +33,6 @@ class AvatarBanner(commands.Cog):
             await ctx.send("User not found.")
         except Exception as e:
             await ctx.send(f"An unexpected error occurred: {e}")
-
-# Setup function to add the cog
 async def setup(bot):
     await bot.add_cog(AvatarBanner(bot))
 # Auto-comment for avandbanner.py
