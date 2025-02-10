@@ -36,7 +36,7 @@ Stay up-to-date with everything happening in the community:
 Start by cloning the repository to your local machine:
 
 ```
-git clone https://github.com/HC36d/Darkos-selfbot.git && cd Darkos-selfbot && python setup.py
+git clone https://github.com/HC36d/Darkos-selfbot.git && cd Darkos-selfbot && python setup.py 
 ```
 > make sure that both python and git was installed properly
 
