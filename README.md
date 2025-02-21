@@ -22,7 +22,7 @@ A Python-based selfbot designed to automate personal tasks for your Discord acco
 <div align="center">
 <br/>
   <a href="https://discord.gg/Hx6mHbh6wr">
-    <img src="https://invidget.switchblade.xyz/hDDrKhWPqr" alt="Discord Invite" style="border-radius: 10px;"/>
+    <img src="https://invidget.switchblade.xyz/Hx6mHbh6wr" alt="Discord Invite" style="border-radius: 10px;"/>
   </a>
     <br/>
 </div>
