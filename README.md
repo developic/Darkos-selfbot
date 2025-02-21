@@ -1,6 +1,13 @@
-# 🎉 Selfbot Project 🎉
-
-A Python-based selfbot designed to automate personal tasks for your Discord account. This selfbot allows you to interact with Discord in various ways, but **please be aware of the potential risks** such as getting banned.
+<div align="center">
+  <center><img src="static/imgs/logo.png" width="150"></center>
+  <br>
+  <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Pacifico&size=40&pause=1000&color=e70505&center=true&vCenter=true&random=false&width=425&lines=Darkos" alt="Typing SVG" />
+  <br/>
+  <a href="https://discord.gg/Hx6mHbh6wr"><img src="https://invidget.switchblade.xyz/Hx6mHbh6wr" alt="Discord Invite"/> </a>
+  <br/>
+  <p>join our discord! (For updates and help)</p>
+  <p>Alternatively, send a friend request to `@developic` on discord for help!</p>
+</div>
 
 <div align="center">
   <img src="https://img.shields.io/github/stars/HC36d/Darkos-selfbot?style=social" alt="GitHub Repo stars">
@@ -10,38 +17,13 @@ A Python-based selfbot designed to automate personal tasks for your Discord acco
 </div>
 
 ---
+A Python-based selfbot designed to automate tasks like auto react,join server etc with many fun command and control module support
 
-<div style="background-color: #ffcc00; color: black; border-radius: 8px; padding: 15px; font-size: 1.2em; text-align: center; font-weight: bold;">
-  ⚠️🚨 WE ARE NOT RESPONSIBLE IF YOU GET BANNED USING OUR SELFBOTS.
-</div>
-
----
-
-# 🌟 **Join Our Discord Community!** 🌟
-
-<div align="center">
-<br/>
-  <a href="https://discord.gg/Hx6mHbh6wr">
-    <img src="https://invidget.switchblade.xyz/Hx6mHbh6wr" alt="Discord Invite" style="border-radius: 10px;"/>
-  </a>
-    <br/>
-</div>
----
-
-### 📢 **Get Updates!**
-
-Stay up-to-date with everything happening in the community:
-
-<ul>
-  <li>🚀 New features</li>
-  <li>🐞 Bug fixes</li>
-  <li>🔴 Live updates</li>
-  <li>📚 Help and support</li>
-</ul>
+> [!IMPORTANT]
+> ⚠️🚨 WE ARE NOT responsible if you get **banned** using our selfbots. Selfbots are agains discord tos.
 
 ---
-
-## 🎯 **Installation**
+## 🎯 **basic Installation**
 
 ### 1. Clone the repository
 
@@ -55,36 +37,22 @@ git clone https://github.com/HC36d/Darkos-selfbot.git && cd Darkos-selfbot && py
 
 #### Android or Termux
 ```bash
-pkg update && pkg upgrade -y && termux-setup-storage && pkg install python -y && pkg install git -y && pkg install espeak -y && cd storage/downloads && git clone https://github.com/HC36d/Darkos-selfbot.git && cd Darkos-selfbot && python setup.py
+pkg update && pkg upgrade -y && termux-setup-storage && pkg install python -y && pkg install git -y && cd storage/downloads && git clone https://github.com/HC36d/Darkos-selfbot.git && cd Darkos-selfbot && python setup.py
 ```
 > Make sure to install Termux from F-Droid or GitHub.
 
+> [!TIP]
+> For help with setup, please join our discord server(or send `developic` a friend request) and I'll help you set it up on both termux(android) and desktop/laptop devices. Ill make tutoriales for it laters!
 ---
-
-## ✨ **Features**
-
-<ul>
-  <li>🎉 Fun commands</li>
-  <li>🛠️ Utility commands</li>
-  <li>📜 Help command</li>
-  <li>📨 Command execution in private chats</li>
-  <li>And more!</li>
-</ul>
-
----
-
-## 📋 **Requirements**
-
-Before you start, make sure you have the following installed:
-
-<ul>
-  <li>Python 3.8 or higher</li>
-  <li>`pip` (Python's package installer)</li>
-  <li>Discord account (selfbot should be used on your own account only)</li>
-</ul>
-
+# development 🖥️
 ---
 
 <div align="center">
-  <img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=HC36d&theme=github" alt="GitHub Repo Details">
+  <img src="https://repobeats.axiom.co/api/embed/56f44e936ab864311b7a967c2d3c84a310a4375a.svg" alt="GitHub Repo Details">
 </div>
+---
+
+thanks for reading :>, I hope this tool could help you even if a little ❤ .
+---
+shootout to echoquill :/
+
