@@ -46,13 +46,12 @@ pkg update && pkg upgrade -y && termux-setup-storage && pkg install python -y &&
 ---
 # development 🖥️
 ---
-
 <div align="center">
   <img src="https://repobeats.axiom.co/api/embed/56f44e936ab864311b7a967c2d3c84a310a4375a.svg" alt="GitHub Repo Details">
 </div>
 ---
-
 thanks for reading :>, I hope this tool could help you even if a little ❤ .
 ---
-shootout to echoquill :/
+
+shootout to echoquill 
 
