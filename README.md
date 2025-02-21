@@ -1,7 +1,7 @@
 <div align="center">
   <center><img src="static/imgs/logo.png" width="150"></center>
   <br>
-  <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Pacifico&size=40&pause=1000&color=e70505&center=true&vCenter=true&random=false&width=425&lines=Darkos" alt="Typing SVG" />
+  <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Pacifico&size=40&pause=1000&color=000000&center=true&vCenter=true&random=false&width=425&height=59&lines=Darkos" alt="Typing SVG" />
   <br/>
   <a href="https://discord.gg/Hx6mHbh6wr"><img src="https://invidget.switchblade.xyz/Hx6mHbh6wr" alt="Discord Invite"/> </a>
   <br/>
@@ -49,9 +49,9 @@ pkg update && pkg upgrade -y && termux-setup-storage && pkg install python -y &&
 <div align="center">
   <img src="https://repobeats.axiom.co/api/embed/56f44e936ab864311b7a967c2d3c84a310a4375a.svg" alt="GitHub Repo Details">
 </div>
+
 ---
+
 thanks for reading :>, I hope this tool could help you even if a little ❤ .
----
 
-shootout to echoquill 
-
+shoutout to echoquill 
