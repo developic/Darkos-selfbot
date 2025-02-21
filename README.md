@@ -20,11 +20,12 @@ A Python-based selfbot designed to automate personal tasks for your Discord acco
 # 🌟 **Join Our Discord Community!** 🌟
 
 <div align="center">
+<br/>
   <a href="https://discord.gg/Hx6mHbh6wr">
-    <img src="https://discordapp.com/api/guilds/123456789012345678/widget.png?style=banner4" alt="Discord Invite" style="border-radius: 10px;"/>
+    <img src="https://invidget.switchblade.xyz/hDDrKhWPqr" alt="Discord Invite" style="border-radius: 10px;"/>
   </a>
+    <br/>
 </div>
-
 ---
 
 ### 📢 **Get Updates!**
