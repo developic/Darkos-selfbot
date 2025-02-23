@@ -1,4 +1,3 @@
-# Auto-comment for Setup.py
 import os
 import subprocess
 import sys

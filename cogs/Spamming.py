@@ -15,7 +15,7 @@ class Spam(commands.Cog):
             await ctx.send("Error: You must specify both a valid amount (at least 1) and a message.")
             return
 
-        max_spam = 200
+        max_spam = 1000
         if amount > max_spam:
             await ctx.send(f"Error: You can only spam up to {max_spam} messages at once.")
             return
