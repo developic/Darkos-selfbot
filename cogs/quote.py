@@ -8,7 +8,7 @@ class quote(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="test")
+    @commands.command(name="quote",help="!quote to see quote daily updated my myself :>")
     async def fetch_quote(self, ctx):
         api_url = "https://hc36d.github.io/api/quote.json"
 

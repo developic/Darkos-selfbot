@@ -7,7 +7,7 @@ class News(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="news")
+    @commands.command(name="news", help="daily news about stuffs happening in world")
     async def fetch_news(self, ctx):
         api_url = "https://hc36d.github.io/api/news.json"
 

@@ -7,7 +7,7 @@ class Hack(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="hack")
+    @commands.command(name="hack", help="if your friends is a fool and dumb !hack [mention] to hack them")
     async def hack(self, ctx, member: discord.Member):
         message = await ctx.send(f"[*] Starting hack on {member.name}...")
 

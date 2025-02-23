@@ -18,7 +18,7 @@ class ChannelReact(commands.Cog):
         with open(DATA_FILE, "w") as file:
             json.dump(self.channel_reacts, file, indent=4)
 
-    @commands.group(name="rc", aliases=["channelreact"], invoke_without_command=True)
+    @commands.group(name="rc", aliases=["channelreact", help="!rc add [emoji] [channel] ID to react on all msg in a specific channel"], invoke_without_command=True)
     async def channelreact(self, ctx):
         await ctx.send("Use `!rc add [emoji] [channel ID] `, `!rc remove [channel ID]`, or `!rc list`.")
 

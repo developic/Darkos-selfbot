@@ -1,4 +1,3 @@
-# Auto-comment for autoreact.py
 import json
 import os
 from discord.ext import commands
@@ -11,29 +10,25 @@ class AutoReact(commands.Cog):
         self.auto_reacts = self.load_data()
 
     def load_data(self):
-        """Load auto-react data from JSON file."""
         if not os.path.exists(DATA_FILE):
             return {}
         with open(DATA_FILE, "r") as file:
             return json.load(file)
 
     def save_data(self):
-        """Save auto-react data to JSON file."""
         with open(DATA_FILE, "w") as file:
             json.dump(self.auto_reacts, file, indent=4)
 
-    @commands.group(name="ar", aliases=["autoreact"], invoke_without_command=True)
+    @commands.group(name="ar", aliases=["autoreact", help="Use !ar add [msg] [emoji] to automatically reaction on msg"], invoke_without_command=True)
     async def autoreact(self, ctx):
-        """Base command for auto-react."""
-        await ctx.send("Use `!ar add [msg] [emoji] `, `!ar remove [msg]`, or `!ar list`.")
+        await ctx.send("Use `!ar add [msg] [emoji]`, `!ar remove [msg]`, or `!ar list`.")
 
     @autoreact.command(name="add")
     async def add_autoreact(self, ctx, trigger: str, emoji: str):
-        """Add an auto-react for a specific word/phrase in the current server."""
         server_id = str(ctx.guild.id)
         if server_id not in self.auto_reacts:
             self.auto_reacts[server_id] = {}
-
+        
         if trigger in self.auto_reacts[server_id]:
             if emoji in self.auto_reacts[server_id][trigger]:
                 await ctx.send(f"The emoji `{emoji}` is already set to auto-react for `{trigger}`.")
@@ -41,13 +36,12 @@ class AutoReact(commands.Cog):
             self.auto_reacts[server_id][trigger].append(emoji)
         else:
             self.auto_reacts[server_id][trigger] = [emoji]
-
+        
         self.save_data()
         await ctx.send(f"Added auto-react `{emoji}` for the trigger `{trigger}`.")
 
     @autoreact.command(name="remove")
     async def remove_autoreact(self, ctx, trigger: str, emoji: str = None):
-        """Remove an auto-react for a word/phrase or all reactions for a trigger."""
         server_id = str(ctx.guild.id)
         if server_id not in self.auto_reacts or trigger not in self.auto_reacts[server_id]:
             await ctx.send(f"No auto-reacts found for `{trigger}`.")
@@ -72,7 +66,6 @@ class AutoReact(commands.Cog):
 
     @autoreact.command(name="list")
     async def list_autoreacts(self, ctx):
-        """List all auto-reacts in the current server."""
         server_id = str(ctx.guild.id)
         if server_id not in self.auto_reacts or not self.auto_reacts[server_id]:
             await ctx.send("No auto-reacts set in this server.")
@@ -85,7 +78,6 @@ class AutoReact(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        """Automatically react to messages based on triggers."""
         if message.guild is None or message.author.bot:
             return
 
@@ -97,8 +89,7 @@ class AutoReact(commands.Cog):
                         try:
                             await message.add_reaction(emoji)
                         except Exception as e:
-                            print(f"Failed to add reaction {emoji} to message: {e}")
+                            print(f"Failed to add reaction {emoji}: {e}")
 
 async def setup(bot):
     await bot.add_cog(AutoReact(bot))
-# Auto-comment for autoreact.py

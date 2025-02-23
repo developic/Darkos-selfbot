@@ -4,7 +4,7 @@ import sys
 import asyncio
 
 def install_requirements():
-    required_modules = ["discord.py-self", "python-dotenv","rich","requests","aiofiles"]
+    required_modules = ["discord.py-self", "python-dotenv","rich","requests"]
     for module in required_modules:
         try:
             subprocess.check_call([os.sys.executable, "-m", "pip", "install", module])

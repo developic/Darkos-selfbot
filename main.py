@@ -1,4 +1,3 @@
-
 import discord
 from discord.ext import commands
 import os
@@ -55,6 +54,7 @@ clear_terminal()
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 bot = commands.Bot(command_prefix="!", self_bot=True)
+bot.remove_command('help')
 
 @bot.event
 async def on_ready():
