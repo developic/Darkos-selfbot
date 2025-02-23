@@ -1,6 +1,7 @@
 import json
 import os
 from discord.ext import commands
+
 DATA_FILE = "./data/channel_react.json"
 
 class ChannelReact(commands.Cog):
@@ -18,9 +19,9 @@ class ChannelReact(commands.Cog):
         with open(DATA_FILE, "w") as file:
             json.dump(self.channel_reacts, file, indent=4)
 
-    @commands.group(name="rc", aliases=["channelreact", help="!rc add [emoji] [channel] ID to react on all msg in a specific channel"], invoke_without_command=True)
+    @commands.group(name="rc", aliases=["channelreact"], invoke_without_command=True)
     async def channelreact(self, ctx):
-        await ctx.send("Use `!rc add [emoji] [channel ID] `, `!rc remove [channel ID]`, or `!rc list`.")
+        await ctx.send("Use `!rc add [emoji] [channel ID]`, `!rc remove [channel ID]`, or `!rc list`.")
 
     @channelreact.command(name="add")
     async def add_channelreact(self, ctx, emoji: str, channel_id: int):
@@ -57,7 +58,6 @@ class ChannelReact(commands.Cog):
 
     @channelreact.command(name="list")
     async def list_channelreacts(self, ctx):
-
         if not self.channel_reacts:
             await ctx.send("No auto-reactions are set for any channels.")
             return
@@ -71,7 +71,6 @@ class ChannelReact(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-
         if message.guild is None or message.author.bot:
             return
 
@@ -85,4 +84,3 @@ class ChannelReact(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(ChannelReact(bot))
-# Auto-comment for React channel.py

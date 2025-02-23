@@ -19,7 +19,7 @@ class AutoReact(commands.Cog):
         with open(DATA_FILE, "w") as file:
             json.dump(self.auto_reacts, file, indent=4)
 
-    @commands.group(name="ar", aliases=["autoreact", help="Use !ar add [msg] [emoji] to automatically reaction on msg"], invoke_without_command=True)
+    @commands.group(name="ar", aliases=["autoreact"], help="Use !ar add [msg] [emoji] to automatically reaction on msg", invoke_without_command=True)
     async def autoreact(self, ctx):
         await ctx.send("Use `!ar add [msg] [emoji]`, `!ar remove [msg]`, or `!ar list`.")
 
