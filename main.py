@@ -12,7 +12,7 @@ import requests
 import time
 
 console = Console()
-CURRENT_VERSION = "2.0.0.1"
+CURRENT_VERSION = "2.0"
 
 def compare_versions(current, latest):
     return list(map(int, latest.lstrip("v").split("."))) > list(map(int, current.lstrip("v").split(".")))
@@ -26,8 +26,8 @@ def get_latest_version(api_url):
         return "0.0.0"
 
 async def check_for_update():
-    latest_version = get_latest_version("https://hc36d.github.io/api")
-    if compare_versions(CURRENT_VERSION, latest_version):
+    latest_version = get_latest_version("https://developic.github.io/api")
+    if compare_versions(latest_version, CURRENT_VERSION):
         display_ascii()
         console.print(Panel(f"[red]A new version ({latest_version}) is available! Please update your bot.[/red]", expand=True))
         sys.exit(0)
@@ -36,13 +36,13 @@ def clear_terminal():
     os.system("cls" if sys.platform == "win32" else "clear")
 
 def display_ascii():
-    console.print(Panel(Text(r"""
-       ________              ______               
-       ___  __ \____________ ___  /_______________
-       __  / / /_  ___/  __ `/_  //_/  __ \_  ___/
-       _  /_/ /_  /   / /_/ /_  ,<  / /_/ /(__  ) 
-       /_____/ /_/    \__,_/ /_/|_| \____//____/  
-                                                  """, justify="center"), style="white", expand=True))
+    console.print(Panel(Text(r"""________              ______                   
+___  __ \_____ __________  /_______________    
+__  / / /  __ `/_  ___/_  //_/  __ \_  ___/    
+_  /_/ // /_/ /_  /   _  ,<  / /_/ /(__  )     
+/_____/ \__,_/ /_/    /_/|_| \____//____/      
+                                               
+""", justify="center"), style="white", expand=True))
 
 def handle_sigint(signal_number, frame):
     console.print("\n[bold red]Ctrl+C detected. Stopping bot...[/bold red]")

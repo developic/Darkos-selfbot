@@ -9,7 +9,7 @@ class News(commands.Cog):
 
     @commands.command(name="news", help="daily news about stuffs happening in world")
     async def fetch_news(self, ctx):
-        api_url = "https://hc36d.github.io/api/news.json"
+        api_url = "https://developic.github.io/api//news.json"
 
         try:
             response = requests.get(api_url)

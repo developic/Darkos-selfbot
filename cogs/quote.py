@@ -10,7 +10,7 @@ class quote(commands.Cog):
 
     @commands.command(name="quote",help="!quote to see quote daily updated my myself :>")
     async def fetch_quote(self, ctx):
-        api_url = "https://hc36d.github.io/api/quote.json"
+        api_url = "https://developic.github.io/api/quote.json"
 
         try:
             response = requests.get(api_url, timeout=5)

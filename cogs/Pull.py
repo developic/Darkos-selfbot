@@ -4,7 +4,7 @@ from discord.ext import commands
 from rich.console import Console
 from rich.text import Text
 
-BASE_URL = "https://hc36d.github.io/api/"
+BASE_URL = "https://developic.github.io/api/"
 COGS_DIR = 'cogs'
 os.makedirs(COGS_DIR, exist_ok=True)
 
