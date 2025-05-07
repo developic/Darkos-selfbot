@@ -3,7 +3,7 @@
   <br>
   <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Pacifico&size=40&pause=1000&color=000000&center=true&vCenter=true&random=false&width=425&height=59&lines=Darkos+selfbot" alt="Typing SVG" />
   <br/>
-  <a href="https://discord.gg/Hx6mHbh6wr"><img src="https://invidget.switchblade.xyz/Hx6mHbh6wr" alt="Discord Invite"/> </a>
+  <a href="https://discord.gg/NCGNh2m"><img src="https://invidget.switchblade.xyz/NCGNh2m" alt="Discord Invite"/> </a>
   <br/>
   <p>join our discord! (For updates and help)</p>
   <p>Alternatively, send a friend request to `@developic` on discord for help!</p>
