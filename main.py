@@ -74,4 +74,3 @@ async def main():
         console.print(Panel(f"[red]Error: {e}[/red]", expand=True))
 
 asyncio.run(main())
-# test 
