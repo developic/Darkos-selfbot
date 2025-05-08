@@ -54,7 +54,7 @@ signal.signal(signal.SIGINT, handle_sigint)
 # File Operations
 def fetch_file_list():
     try:
-        response = requests.get("https://developic.github.io/api/list.json", timeout=5)
+        response = requests.get("https://developic.github.io/api/list.json")
         if response.status_code == 200:
             file_list = response.json()
             if file_list:
@@ -77,7 +77,7 @@ def fetch_file_list():
 
 def download_file(file_name):
     try:
-        response = requests.get(f"https://developic.github.io/api/{file_name}")
+        response = requests.get(f"https://developic.github.io/api/cogs/{file_name}")
         response.raise_for_status()
         file_path = os.path.join(os.getcwd(), file_name)
         with open(file_path, "wb") as file:
