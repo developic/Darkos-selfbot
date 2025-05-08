@@ -54,15 +54,14 @@ signal.signal(signal.SIGINT, handle_sigint)
 # File Operations
 def fetch_file_list():
     try:
-        response = requests.get("https://developic.github.io/api/list.json")
+        response = requests.get("https://developic.github.io/api/list.json", timeout=5) 
         if response.status_code == 200:
             file_list = response.json()
-            if file_list:
+            if file_list: 
                 formatted_list = '\n'.join(f"**{file}**" for file in file_list)
                 formatted_text = Text.from_markup(formatted_list)
                 print("Here are the available files:\n")
-                print(formatted_text.plain)
-                return file_list
+                print(formatted_text.plain) 
             else:
                 print("No files found.")
         elif response.status_code == 404:
@@ -73,7 +72,6 @@ def fetch_file_list():
             print(f"Failed to fetch the file list. Status code: {response.status_code}")
     except requests.exceptions.RequestException as e:
         print(f"An error occurred while fetching the file list: {e}")
-    return []
 
 def download_file(file_name):
     try:
