@@ -75,15 +75,19 @@ def fetch_file_list():
 
 def download_file(file_name):
     try:
+        cogs_folder = os.path.join(os.getcwd(), "cogs")
+        
         response = requests.get(f"https://developic.github.io/api/cogs/{file_name}")
         response.raise_for_status()
-        file_path = os.path.join(os.getcwd(), file_name)
+
+        file_path = os.path.join(cogs_folder, file_name)
         with open(file_path, "wb") as file:
             file.write(response.content)
+
         console.print(Panel(f"[green]File {file_name} downloaded successfully![/green]", expand=True))
     except requests.RequestException as e:
         console.print(Panel(f"[red]Error downloading file {file_name}: {e}[/red]", expand=True))
-
+        
 def show_menu():
     while True:
         console.print(Panel("Menu:\n1. List files\n2. Download a file\n3. Exit", expand=True))
