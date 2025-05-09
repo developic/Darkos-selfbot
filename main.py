@@ -37,14 +37,24 @@ def clear_terminal():
     os.system("cls" if sys.platform == "win32" else "clear")
 
 def display_ascii():
-    console.print(Panel(Text(r"""________              ______                   
-___  __ \_____ __________  /_______________    
-__  / / /  __ `/_  ___/_  //_/  __ \_  ___/    
-_  /_/ // /_/ /_  /   _  ,<  / /_/ /(__  )     
-/_____/ \__,_/ /_/    /_/|_| \____//____/      
+    ascii_art = r"""
+██████╗  █████╗ ██████╗ ██╗  ██╗ ██████╗ ███████╗
+██╔══██╗██╔══██╗██╔══██╗██║ ██╔╝██╔═══██╗██╔════╝
+██║  ██║███████║██████╔╝█████╔╝ ██║   ██║███████╗
+██║  ██║██╔══██║██╔══██╗██╔═██╗ ██║   ██║╚════██║
+██████╔╝██║  ██║██║  ██║██║  ██╗╚██████╔╝███████║
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════     
                                                
-""", justify="center"), style="white", expand=True))
+"""
+    # Style the ASCII art with gradient-like colors
+    styled_text = Text(ascii_art, justify="center")
+    styled_text.stylize("bold magenta", 0, 50)
+    styled_text.stylize("bold cyan", 50, 100)
+    styled_text.stylize("bold green", 100, len(ascii_art))
 
+    # Print the styled text directly, centered
+    console.print(styled_text, justify="center")
+    
 def handle_sigint(signal_number, frame):
     console.print("\n[bold red]Ctrl+C detected. Stopping bot...[/bold red]")
     os._exit(0)
