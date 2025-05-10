@@ -19,6 +19,6 @@ class GayHeritage(commands.Cog):
         embed_url = f"https://benny.fun/api/embed?description={urllib.parse.quote(description)}&colour=52e6e5&big_image=false"
 
         await ctx.send(f"[․]({embed_url})")
-       3
+       
 async def setup(bot):
     await bot.add_cog(GayHeritage(bot))
