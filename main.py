@@ -10,6 +10,8 @@ from rich.text import Text
 import sys
 import requests
 import time
+import subprocess
+import importlib.util
 
 console = Console()
 CURRENT_VERSION = "2.0"
@@ -46,13 +48,10 @@ def display_ascii():
 ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════     
                                                
 """
-    # Style the ASCII art with gradient-like colors
     styled_text = Text(ascii_art, justify="center")
     styled_text.stylize("bold magenta", 0, 50)
     styled_text.stylize("bold cyan", 50, 100)
     styled_text.stylize("bold green", 100, len(ascii_art))
-
-    # Print the styled text directly, centered
     console.print(styled_text, justify="center")
     
 def handle_sigint(signal_number, frame):
@@ -83,9 +82,41 @@ def fetch_file_list():
     except requests.exceptions.RequestException as e:
         print(f"An error occurred while fetching the file list: {e}")
 
-def download_file(file_name):
+def install_missing_modules(modules):
+    """
+    Install missing Python modules using pip.
+    """
+    for module in modules:
+        try:
+            spec = importlib.util.find_spec(module)
+            if spec is None:
+                raise ImportError
+            console.print(f"[green]Module '{module}' is already installed.[/green]")
+        except ImportError:
+            console.print(f"[yellow]Module '{module}' not found. Installing...[/yellow]")
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", module])
+                console.print(f"[green]Module '{module}' installed successfully![/green]")
+            except Exception as e:
+                console.print(f"[red]Failed to install module '{module}': {e}[/red]")
+
+def is_builtin_module(module_name):
+    """
+    Check if the module is a built-in Python module.
+    """
+    try:
+        spec = importlib.util.find_spec(module_name)
+        return spec is not None and spec.origin == "built-in"
+    except Exception:
+        return False
+
+def download_file_and_install_modules(file_name):
+    """
+    Download the file and install its required modules based on imports.
+    """
     try:
         cogs_folder = os.path.join(os.getcwd(), "cogs")
+        os.makedirs(cogs_folder, exist_ok=True)
         
         response = requests.get(f"https://developic.github.io/api/cogs/{file_name}")
         response.raise_for_status()
@@ -95,12 +126,34 @@ def download_file(file_name):
             file.write(response.content)
 
         console.print(Panel(f"[green]File {file_name} downloaded successfully![/green]", expand=True))
+
+        # Parse the file for imports
+        with open(file_path, "r") as file:
+            content = file.read()
+
+        # Extract imported modules
+        imports = set()
+        for line in content.splitlines():
+            line = line.strip()
+            if line.startswith("import "):
+                imports.add(line.split(" ")[1].split(".")[0])
+            elif line.startswith("from "):
+                imports.add(line.split(" ")[1].split(".")[0])
+        
+        # Filter out built-in modules (basic filter)
+        third_party_modules = {module for module in imports if not is_builtin_module(module)}
+        
+        # Install missing modules
+        install_missing_modules(third_party_modules)
+
     except requests.RequestException as e:
         console.print(Panel(f"[red]Error downloading file {file_name}: {e}[/red]", expand=True))
-        
+    except Exception as e:
+        console.print(Panel(f"[red]An error occurred: {e}[/red]", expand=True))
+
 def show_menu():
     while True:
-        console.print(Panel("Menu:\n1. List files\n2. Download a file\n3. Exit", expand=True))
+        console.print(Panel("Menu:\n1. List files\n2. Download and process a file\n3. Exit", expand=True))
         choice = input("Enter your choice: ")
         if choice == "1":
             file_list = fetch_file_list()
@@ -108,7 +161,10 @@ def show_menu():
                 console.print(Panel(f"Files:\n{', '.join(file_list)}", expand=True))
         elif choice == "2":
             file_name = input("Enter the file name to download: ")
-            download_file(file_name)
+            if file_name:
+                download_file_and_install_modules(file_name)
+            else:
+                console.print("[red]File name cannot be empty![/red]")
         elif choice == "3":
             os._exit(0)
         else:
