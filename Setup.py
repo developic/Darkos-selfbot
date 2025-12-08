@@ -25,7 +25,7 @@ def uninstall_stuff():
             print(f"\nPackage '{pkg}' is not installed.")
 
 def install_requirements():
-    required_modules = ["git+https://github.com/dolfies/discord.py-self@20ae80b398ec83fa272f0a96812140e14868c88f", "python-dotenv","rich","requests"]
+    required_modules = ["discord.py-self", "python-dotenv","rich","requests"]
     for module in required_modules:
         try:
             subprocess.check_call([os.sys.executable, "-m", "pip", "install", module])
