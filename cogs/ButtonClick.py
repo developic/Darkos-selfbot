@@ -4,19 +4,15 @@ import re
 import asyncio
 import json
 import os
-import random
 
 CONFIG_FILE = "tracked_bots.json"
-MSG_FILE = "msg.json"
 
 class AutoButtonClick(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.tracked_bots = {}
-        self.clicked_messages = set()
-        self.click_count = {}  # {channel_id: count}
+        self.clicked_messages = set()  # Store already-clicked message IDs
         self.load_config()
-        self.load_messages()
 
     def parse_channel_link(self, channel_link):
         match = re.match(r"https?://discord\.com/channels/(\d+)/(\d+)", channel_link)
@@ -34,13 +30,6 @@ class AutoButtonClick(commands.Cog):
             with open(CONFIG_FILE, "r") as f:
                 self.tracked_bots = json.load(f)
                 self.tracked_bots = {int(k): int(v) for k, v in self.tracked_bots.items()}
-
-    def load_messages(self):
-        if os.path.exists(MSG_FILE):
-            with open(MSG_FILE, "r") as f:
-                self.messages = json.load(f)
-        else:
-            self.messages = ["Button clicked!"]
 
     @commands.command(name="click", help="Track a bot and auto-click first button in its messages. Usage: !click <bot_id> <channel_link>")
     async def track_bot(self, ctx, bot_id: int, channel_link: str):
@@ -60,7 +49,6 @@ class AutoButtonClick(commands.Cog):
             return
 
         self.tracked_bots[channel_id] = bot_id
-        self.click_count[channel_id] = 0
         self.save_config()
         print(f"Started tracking bot {bot_id} in channel {channel.id} of guild {guild.id}")
 
@@ -73,14 +61,13 @@ class AutoButtonClick(commands.Cog):
 
         if channel_id in self.tracked_bots:
             del self.tracked_bots[channel_id]
-            if channel_id in self.click_count:
-                del self.click_count[channel_id]
             self.save_config()
             print(f"Stopped tracking any bot in channel {channel_id}")
         else:
             print(f"No bot is being tracked in channel {channel_id}")
 
     async def process_buttons(self, message):
+        # Skip if the message has already been clicked
         if message.id in self.clicked_messages:
             return
 
@@ -97,6 +84,7 @@ class AutoButtonClick(commands.Cog):
         if not buttons:
             return
 
+        # Mark as clicked before clicking to prevent double-click
         self.clicked_messages.add(message.id)
         print("Delaying for 1 second before clicking button...")
         await asyncio.sleep(1)
@@ -106,17 +94,6 @@ class AutoButtonClick(commands.Cog):
                 print(f"Auto-clicked button, opened URL: {result}")
             else:
                 print("Auto-clicked button successfully.")
-            
-            # Increment click count for the channel
-            channel_id = message.channel.id
-            self.click_count[channel_id] = self.click_count.get(channel_id, 0) + 1
-            if self.click_count[channel_id] >= 4:
-                # Reset count and send random message
-                self.click_count[channel_id] = 0
-                if self.messages:
-                    msg = random.choice(self.messages)
-                    await message.channel.send(msg)
-                    print(f"Sent random message: {msg}")
         except Exception as e:
             print(f"Auto-click failed: {e}")
 
