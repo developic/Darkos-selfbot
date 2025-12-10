@@ -15,6 +15,7 @@ class AutoButtonClick(commands.Cog):
         self.bot = bot
         self.tracked_bots = {}
         self.clicked_messages = set()  # Store already-clicked message IDs
+        self.skip_count = 0  # Number of buttons to skip after name change
         self.load_config()
 
 
@@ -45,18 +46,15 @@ class AutoButtonClick(commands.Cog):
             print("Invalid channel link. Use format: https://discord.com/channels/guild_id/channel_id")
             return
 
-
         guild = self.bot.get_guild(guild_id)
         if not guild:
             print("Guild not found.")
             return
 
-
         channel = guild.get_channel(channel_id)
         if not channel:
             print("Channel not found.")
             return
-
 
         self.tracked_bots[channel_id] = bot_id
         self.save_config()
@@ -70,7 +68,6 @@ class AutoButtonClick(commands.Cog):
             print("Invalid channel link. Use format: https://discord.com/channels/guild_id/channel_id")
             return
 
-
         if channel_id in self.tracked_bots:
             del self.tracked_bots[channel_id]
             self.save_config()
@@ -79,15 +76,19 @@ class AutoButtonClick(commands.Cog):
             print(f"No bot is being tracked in channel {channel_id}")
 
 
+    def skip_next_buttons(self, count=3):
+        """Called by AutoProfileChanger to skip next N buttons after name change"""
+        self.skip_count = count
+        print(f"Will skip the next {count} buttons after name change")
+
+
     async def process_buttons(self, message):
         # Skip if the message has already been clicked
         if message.id in self.clicked_messages:
             return
 
-
         if not message.components:
             return
-
 
         buttons = []
         for row in message.components:
@@ -96,16 +97,21 @@ class AutoButtonClick(commands.Cog):
                     if component.type == discord.ComponentType.button:
                         buttons.append(component)
 
-
         if not buttons:
             return
 
+        # Check if we should skip this button
+        if self.skip_count > 0:
+            self.skip_count -= 1
+            print(f"Skipping button click (remaining skips: {self.skip_count})")
+            self.clicked_messages.add(message.id)
+            return
 
         # Mark as clicked before clicking to prevent double-click
         self.clicked_messages.add(message.id)
         
-        # Random delay between 1.0 and 2.0 seconds
-        delay = random.uniform(2.0, 3.0)
+        # Random delay between 4.0 and 5.0 seconds
+        delay = random.uniform(4.0, 5.0)
         print(f"Delaying for {delay:.2f} seconds before clicking button...")
         await asyncio.sleep(delay)
         
@@ -124,11 +130,9 @@ class AutoButtonClick(commands.Cog):
         if message.channel.id not in self.tracked_bots:
             return
 
-
         bot_id = self.tracked_bots[message.channel.id]
         if message.author.id != bot_id:
             return
-
 
         await self.process_buttons(message)
 
@@ -138,11 +142,9 @@ class AutoButtonClick(commands.Cog):
         if after.channel.id not in self.tracked_bots:
             return
 
-
         bot_id = self.tracked_bots[after.channel.id]
         if after.author.id != bot_id:
             return
-
 
         await self.process_buttons(after)
 
