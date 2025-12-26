@@ -16,12 +16,6 @@ import importlib.util
 console = Console()
 CURRENT_VERSION = "2.0"
 
-# Global bot instances
-bot1 = None
-bot2 = None
-bot1_task = None
-bot2_task = None
-
 # Utility Functions
 def compare_versions(current, latest):
     return list(map(int, latest.lstrip("v").split("."))) > list(map(int, current.lstrip("v").split(".")))
@@ -61,7 +55,7 @@ def display_ascii():
     console.print(styled_text, justify="center")
     
 def handle_sigint(signal_number, frame):
-    console.print("\n[bold red]Ctrl+C detected. Stopping bots...[/bold red]")
+    console.print("\n[bold red]Ctrl+C detected. Stopping bot...[/bold red]")
     os._exit(0)
 
 signal.signal(signal.SIGINT, handle_sigint)
@@ -89,7 +83,9 @@ def fetch_file_list():
         print(f"An error occurred while fetching the file list: {e}")
 
 def install_missing_modules(modules):
-    """Install missing Python modules using pip."""
+    """
+    Install missing Python modules using pip.
+    """
     for module in modules:
         try:
             spec = importlib.util.find_spec(module)
@@ -105,7 +101,9 @@ def install_missing_modules(modules):
                 console.print(f"[red]Failed to install module '{module}': {e}[/red]")
 
 def is_builtin_module(module_name):
-    """Check if the module is a built-in Python module."""
+    """
+    Check if the module is a built-in Python module.
+    """
     try:
         spec = importlib.util.find_spec(module_name)
         return spec is not None and spec.origin == "built-in"
@@ -113,7 +111,9 @@ def is_builtin_module(module_name):
         return False
 
 def download_file_and_install_modules(file_name):
-    """Download the file and install its required modules based on imports."""
+    """
+    Download the file and install its required modules based on imports.
+    """
     try:
         cogs_folder = os.path.join(os.getcwd(), "cogs")
         os.makedirs(cogs_folder, exist_ok=True)
@@ -140,7 +140,7 @@ def download_file_and_install_modules(file_name):
             elif line.startswith("from "):
                 imports.add(line.split(" ")[1].split(".")[0])
         
-        # Filter out built-in modules
+        # Filter out built-in modules (basic filter)
         third_party_modules = {module for module in imports if not is_builtin_module(module)}
         
         # Install missing modules
@@ -151,189 +151,53 @@ def download_file_and_install_modules(file_name):
     except Exception as e:
         console.print(Panel(f"[red]An error occurred: {e}[/red]", expand=True))
 
-async def stop_bot_async(bot_number):
-    """Stop a specific bot"""
-    global bot1, bot2, bot1_task, bot2_task
-    
-    if bot_number == 1:
-        if bot1 and not bot1.is_closed():
-            console.print(Panel("[yellow]Stopping Bot 1...[/yellow]", expand=True))
-            await bot1.close()
-            if bot1_task:
-                bot1_task.cancel()
-            console.print(Panel("[green]Bot 1 stopped successfully![/green]", expand=True))
-        else:
-            console.print(Panel("[red]Bot 1 is not running![/red]", expand=True))
-    elif bot_number == 2:
-        if bot2 and not bot2.is_closed():
-            console.print(Panel("[yellow]Stopping Bot 2...[/yellow]", expand=True))
-            await bot2.close()
-            if bot2_task:
-                bot2_task.cancel()
-            console.print(Panel("[green]Bot 2 stopped successfully![/green]", expand=True))
-        else:
-            console.print(Panel("[red]Bot 2 is not running![/red]", expand=True))
-
 def show_menu():
-    """Interactive menu for bot management"""
     while True:
-        menu_text = """Menu:
-1. List available files
-2. Download and process a file
-3. Show bot status
-4. Stop a bot (Bot 1 or Bot 2)
-5. Exit"""
-        
-        console.print(Panel(menu_text, expand=True, style="bold cyan"))
+        console.print(Panel("Menu:\n1. List files\n2. Download and process a file\n3. Exit", expand=True))
         choice = input("Enter your choice: ")
-        
         if choice == "1":
-            fetch_file_list()
-            
+            file_list = fetch_file_list()
+            if file_list:
+                console.print(Panel(f"Files:\n{', '.join(file_list)}", expand=True))
         elif choice == "2":
             file_name = input("Enter the file name to download: ")
             if file_name:
                 download_file_and_install_modules(file_name)
             else:
                 console.print("[red]File name cannot be empty![/red]")
-                
         elif choice == "3":
-            # Show bot status
-            status_text = "=== BOT STATUS ===\n"
-            if bot1:
-                status1 = "🟢 Running" if not bot1.is_closed() else "🔴 Stopped"
-                status_text += f"Bot 1: {status1}\n"
-                if not bot1.is_closed():
-                    status_text += f"  User: {bot1.user}\n"
-                    status_text += f"  Bot2 ID: {getattr(bot1, '_bot2_user_id', 'Not linked')}\n"
-            else:
-                status_text += "Bot 1: ⚪ Not initialized\n"
-                
-            if bot2:
-                status2 = "🟢 Running" if not bot2.is_closed() else "🔴 Stopped"
-                status_text += f"Bot 2: {status2}\n"
-                if not bot2.is_closed():
-                    status_text += f"  User: {bot2.user}\n"
-                    status_text += f"  Bot1 ID: {getattr(bot2, '_bot1_user_id', 'Not linked')}\n"
-            else:
-                status_text += "Bot 2: ⚪ Not initialized\n"
-                
-            console.print(Panel(status_text, expand=True, style="bold yellow"))
-            
-        elif choice == "4":
-            console.print("[cyan]Which bot do you want to stop?[/cyan]")
-            console.print("1. Bot 1")
-            console.print("2. Bot 2")
-            console.print("3. Both bots")
-            bot_choice = input("Enter choice (1/2/3): ")
-            
-            if bot_choice == "1":
-                asyncio.run(stop_bot_async(1))
-            elif bot_choice == "2":
-                asyncio.run(stop_bot_async(2))
-            elif bot_choice == "3":
-                asyncio.run(stop_bot_async(1))
-                asyncio.run(stop_bot_async(2))
-            else:
-                console.print("[red]Invalid choice![/red]")
-                
-        elif choice == "5":
-            console.print(Panel("[yellow]Exiting... Stopping all bots[/yellow]", expand=True))
             os._exit(0)
-            
         else:
             console.print(Panel("[red]Invalid choice. Please try again.[/red]", expand=True))
-
-def link_bots():
-    """Link both bots so they can communicate via DM"""
-    global bot1, bot2
-    if bot2 and bot2.user:
-        bot1._bot2_user_id = bot2.user.id
-    if bot1 and bot1.user:
-        bot2._bot1_user_id = bot1.user.id
 
 # Bot Initialization
 clear_terminal()
 load_dotenv()
+TOKEN = os.getenv("TOKEN1")
+if not TOKEN:
+    sys.exit("Error: TOKEN not found in environment variables.")
 
-TOKEN1 = os.getenv("TOKEN1")
-TOKEN2 = os.getenv("TOKEN2")
-
-if not TOKEN1 or not TOKEN2:
-    sys.exit("Error: TOKEN1 or TOKEN2 not found in environment variables.")
-
-bot1 = commands.Bot(command_prefix="!", self_bot=True)
-bot2 = commands.Bot(command_prefix="!", self_bot=True)
-
-bot1.remove_command('help')
-bot2.remove_command('help')
-
-# Mark bots
-bot1._is_primary = True
-bot1._bot_name = "Bot 1"
-bot1._running = True
-
-bot2._is_primary = False
-bot2._is_secondary_bot = True
-bot2._bot_name = "Bot 2"
-bot2._running = True
+bot = commands.Bot(command_prefix="!", self_bot=True)
+bot.remove_command('help')
 
 # Bot Events
-@bot1.event
+@bot.event
 async def on_ready():
-    console.print(Panel(Text(f"Bot 1 logged in as {bot1.user}", justify="center"), expand=True, style="bold cyan"))
-    link_bots()
-    bot2_id = getattr(bot1, '_bot2_user_id', None)
-    if bot2_id:
-        console.print(Panel(Text(f"✓ Linked to Bot 2 (ID: {bot2_id})", justify="center"), expand=True, style="bold green"))
+    display_ascii()
+    console.print("-" * console.width)
+    console.print(Panel(Text("made by Hb36d", justify="center"), expand=True, style="bold green"))
+    console.print(Panel(Text(f"Logged in as {bot.user}", justify="center"), expand=True, style="bold magenta"))
+    await asyncio.to_thread(show_menu)
 
-@bot2.event
-async def on_ready():
-    console.print(Panel(Text(f"Bot 2 logged in as {bot2.user}", justify="center"), expand=True, style="bold green"))
-    link_bots()
-    bot1_id = getattr(bot2, '_bot1_user_id', None)
-    if bot1_id:
-        console.print(Panel(Text(f"✓ Linked to Bot 1 (ID: {bot1_id})", justify="center"), expand=True, style="bold cyan"))
-
-async def load_cogs(bot):
-    """Load all cogs for a specific bot"""
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
-            try:
-                await bot.load_extension(f"cogs.{filename[:-3]}")
-            except Exception as e:
-                console.print(f"[red]Failed to load {filename} on {bot._bot_name}: {e}[/red]")
-
-async def start_bot(bot, token, bot_name):
-    """Start a single bot instance"""
-    try:
-        await load_cogs(bot)
-        await bot.start(token)
-    except Exception as e:
-        if "closed" not in str(e).lower():
-            console.print(Panel(f"[red]{bot_name} Error: {e}[/red]", expand=True))
+async def load_cogs():
+    await asyncio.gather(*(bot.load_extension(f"cogs.{f[:-3]}") for f in os.listdir("./cogs") if f.endswith(".py")))
 
 # Main Function
 async def main():
-    global bot1_task, bot2_task
-    
     try:
-        display_ascii()
-        console.print("-" * console.width)
-        console.print(Panel(Text("made by Hb36d", justify="center"), expand=True, style="bold green"))
-        console.print(Panel(Text("Starting both bots...", justify="center"), expand=True, style="bold magenta"))
-        
         await check_for_update()
-        
-        # Start menu in separate thread
-        asyncio.create_task(asyncio.to_thread(show_menu))
-        
-        # Run both bots concurrently
-        bot1_task = asyncio.create_task(start_bot(bot1, TOKEN1, "Bot 1"))
-        bot2_task = asyncio.create_task(start_bot(bot2, TOKEN2, "Bot 2"))
-        
-        await asyncio.gather(bot1_task, bot2_task, return_exceptions=True)
-        
+        await load_cogs()
+        await bot.start(TOKEN)
     except Exception as e:
         console.print(Panel(f"[red]Error: {e}[/red]", expand=True))
 
