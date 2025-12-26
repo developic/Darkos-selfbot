@@ -9,9 +9,9 @@ from rich.console import Console
 from rich.text import Text
 import sys
 import requests
-import time
 import subprocess
 import importlib.util
+import logging
 
 console = Console()
 CURRENT_VERSION = "2.0"
@@ -21,26 +21,31 @@ bot1 = None
 bot2 = None
 bot1_task = None
 bot2_task = None
+logging_enabled = False  # Logging disabled by default
+
+# Logging Configuration (initially disabled)
+logger = logging.getLogger(__name__)
+
+def toggle_logging():
+    """Toggle logging on/off"""
+    global logging_enabled
+    logging_enabled = not logging_enabled
+    
+    if logging_enabled:
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            handlers=[logging.StreamHandler(sys.stdout)],
+            force=True
+        )
+        logger.setLevel(logging.INFO)
+        logging.getLogger('discord').setLevel(logging.INFO)
+        console.print(Panel("[green]✓ Logging enabled[/green]", expand=True))
+    else:
+        logging.disable(logging.CRITICAL)
+        console.print(Panel("[yellow]✓ Logging disabled[/yellow]", expand=True))
 
 # Utility Functions
-def compare_versions(current, latest):
-    return list(map(int, latest.lstrip("v").split("."))) > list(map(int, current.lstrip("v").split(".")))
-
-def get_latest_version(api_url):
-    try:
-        response = requests.get(f"{api_url}/version.json?nocache={time.time()}")
-        response.raise_for_status()
-        return response.json().get("version", "0.0.0")
-    except requests.RequestException:
-        return "0.0.0"
-
-async def check_for_update():
-    latest_version = get_latest_version("https://developic.github.io/api")
-    if compare_versions(latest_version, CURRENT_VERSION):
-        display_ascii()
-        console.print(Panel(f"[red]A new version ({latest_version}) is available! Please update your bot.[/red]", expand=True))
-        sys.exit(0)
-
 def clear_terminal():
     os.system("cls" if sys.platform == "win32" else "clear")
 
@@ -48,7 +53,7 @@ def display_ascii():
     ascii_art = r"""
 ██████╗  █████╗ ██████╗ ██╗  ██╗ ██████╗ ███████╗
 ██╔══██╗██╔══██╗██╔══██╗██║ ██╔╝██╔═══██╗██╔════╝
-██║  ██║███████║██████╔╝█████╔╝ ██║   ██║███████╗
+██║  ██║███████║██████╔╝█████╔╝ ██║   ██║███████║
 ██║  ██║██╔══██║██╔══██╗██╔═██╗ ██║   ██║╚════██║
 ██████╔╝██║  ██║██║  ██║██║  ██╗╚██████╔╝███████║
 ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════     
@@ -75,18 +80,20 @@ def fetch_file_list():
             if file_list: 
                 formatted_list = '\n'.join(f"**{file}**" for file in file_list)
                 formatted_text = Text.from_markup(formatted_list)
-                print("Here are the available files:\n")
-                print(formatted_text.plain) 
+                console.print("\n[cyan]Available files:[/cyan]\n")
+                console.print(formatted_text.plain) 
             else:
-                print("No files found.")
+                console.print("[yellow]No files found.[/yellow]")
         elif response.status_code == 404:
-            print("The file list is unavailable (404). Please try again later.")
+            console.print("[red]The file list is unavailable (404). Please try again later.[/red]")
         elif response.status_code == 500:
-            print("Server error (500). Please try again later.")
+            console.print("[red]Server error (500). Please try again later.[/red]")
         else:
-            print(f"Failed to fetch the file list. Status code: {response.status_code}")
+            console.print(f"[red]Failed to fetch the file list. Status code: {response.status_code}[/red]")
     except requests.exceptions.RequestException as e:
-        print(f"An error occurred while fetching the file list: {e}")
+        console.print(f"[red]An error occurred while fetching the file list: {e}[/red]")
+        if logging_enabled:
+            logger.exception("Error fetching file list")
 
 def install_missing_modules(modules):
     """Install missing Python modules using pip."""
@@ -95,14 +102,16 @@ def install_missing_modules(modules):
             spec = importlib.util.find_spec(module)
             if spec is None:
                 raise ImportError
-            console.print(f"[green]Module '{module}' is already installed.[/green]")
+            console.print(f"[green]✓ Module '{module}' is already installed.[/green]")
         except ImportError:
-            console.print(f"[yellow]Module '{module}' not found. Installing...[/yellow]")
+            console.print(f"[yellow]⚠ Module '{module}' not found. Installing...[/yellow]")
             try:
                 subprocess.check_call([sys.executable, "-m", "pip", "install", module])
-                console.print(f"[green]Module '{module}' installed successfully![/green]")
+                console.print(f"[green]✓ Module '{module}' installed successfully![/green]")
             except Exception as e:
-                console.print(f"[red]Failed to install module '{module}': {e}[/red]")
+                console.print(f"[red]✗ Failed to install module '{module}': {e}[/red]")
+                if logging_enabled:
+                    logger.exception(f"Failed to install {module}")
 
 def is_builtin_module(module_name):
     """Check if the module is a built-in Python module."""
@@ -118,6 +127,7 @@ def download_file_and_install_modules(file_name):
         cogs_folder = os.path.join(os.getcwd(), "cogs")
         os.makedirs(cogs_folder, exist_ok=True)
         
+        console.print(f"[cyan]Downloading {file_name}...[/cyan]")
         response = requests.get(f"https://developic.github.io/api/cogs/{file_name}")
         response.raise_for_status()
 
@@ -125,7 +135,7 @@ def download_file_and_install_modules(file_name):
         with open(file_path, "wb") as file:
             file.write(response.content)
 
-        console.print(Panel(f"[green]File {file_name} downloaded successfully![/green]", expand=True))
+        console.print(Panel(f"[green]✓ File {file_name} downloaded successfully![/green]", expand=True))
 
         # Parse the file for imports
         with open(file_path, "r") as file:
@@ -140,16 +150,26 @@ def download_file_and_install_modules(file_name):
             elif line.startswith("from "):
                 imports.add(line.split(" ")[1].split(".")[0])
         
-        # Filter out built-in modules
-        third_party_modules = {module for module in imports if not is_builtin_module(module)}
+        # Filter out built-in modules and discord
+        third_party_modules = {
+            module for module in imports 
+            if not is_builtin_module(module) and module not in ['discord']
+        }
         
-        # Install missing modules
-        install_missing_modules(third_party_modules)
+        if third_party_modules:
+            console.print(f"[cyan]Installing dependencies: {', '.join(third_party_modules)}[/cyan]")
+            install_missing_modules(third_party_modules)
+        else:
+            console.print("[green]No additional dependencies required.[/green]")
 
     except requests.RequestException as e:
-        console.print(Panel(f"[red]Error downloading file {file_name}: {e}[/red]", expand=True))
+        console.print(Panel(f"[red]✗ Error downloading file {file_name}: {e}[/red]", expand=True))
+        if logging_enabled:
+            logger.exception(f"Error downloading {file_name}")
     except Exception as e:
-        console.print(Panel(f"[red]An error occurred: {e}[/red]", expand=True))
+        console.print(Panel(f"[red]✗ An error occurred: {e}[/red]", expand=True))
+        if logging_enabled:
+            logger.exception("Unexpected error")
 
 async def stop_bot_async(bot_number):
     """Stop a specific bot"""
@@ -161,41 +181,43 @@ async def stop_bot_async(bot_number):
             await bot1.close()
             if bot1_task:
                 bot1_task.cancel()
-            console.print(Panel("[green]Bot 1 stopped successfully![/green]", expand=True))
+            console.print(Panel("[green]✓ Bot 1 stopped successfully![/green]", expand=True))
         else:
-            console.print(Panel("[red]Bot 1 is not running![/red]", expand=True))
+            console.print(Panel("[red]✗ Bot 1 is not running![/red]", expand=True))
     elif bot_number == 2:
         if bot2 and not bot2.is_closed():
             console.print(Panel("[yellow]Stopping Bot 2...[/yellow]", expand=True))
             await bot2.close()
             if bot2_task:
                 bot2_task.cancel()
-            console.print(Panel("[green]Bot 2 stopped successfully![/green]", expand=True))
+            console.print(Panel("[green]✓ Bot 2 stopped successfully![/green]", expand=True))
         else:
-            console.print(Panel("[red]Bot 2 is not running![/red]", expand=True))
+            console.print(Panel("[red]✗ Bot 2 is not running![/red]", expand=True))
 
 def show_menu():
     """Interactive menu for bot management"""
     while True:
-        menu_text = """Menu:
+        logging_status = "🟢 ON" if logging_enabled else "🔴 OFF"
+        menu_text = f"""Menu:
 1. List available files
 2. Download and process a file
 3. Show bot status
 4. Stop a bot (Bot 1 or Bot 2)
-5. Exit"""
+5. Toggle logging [{logging_status}]
+6. Exit"""
         
         console.print(Panel(menu_text, expand=True, style="bold cyan"))
-        choice = input("Enter your choice: ")
+        choice = input("Enter your choice: ").strip()
         
         if choice == "1":
             fetch_file_list()
             
         elif choice == "2":
-            file_name = input("Enter the file name to download: ")
+            file_name = input("Enter the file name to download: ").strip()
             if file_name:
                 download_file_and_install_modules(file_name)
             else:
-                console.print("[red]File name cannot be empty![/red]")
+                console.print("[red]✗ File name cannot be empty![/red]")
                 
         elif choice == "3":
             # Show bot status
@@ -225,7 +247,7 @@ def show_menu():
             console.print("1. Bot 1")
             console.print("2. Bot 2")
             console.print("3. Both bots")
-            bot_choice = input("Enter choice (1/2/3): ")
+            bot_choice = input("Enter choice (1/2/3): ").strip()
             
             if bot_choice == "1":
                 asyncio.run(stop_bot_async(1))
@@ -235,14 +257,17 @@ def show_menu():
                 asyncio.run(stop_bot_async(1))
                 asyncio.run(stop_bot_async(2))
             else:
-                console.print("[red]Invalid choice![/red]")
+                console.print("[red]✗ Invalid choice![/red]")
                 
         elif choice == "5":
+            toggle_logging()
+            
+        elif choice == "6":
             console.print(Panel("[yellow]Exiting... Stopping all bots[/yellow]", expand=True))
             os._exit(0)
             
         else:
-            console.print(Panel("[red]Invalid choice. Please try again.[/red]", expand=True))
+            console.print(Panel("[red]✗ Invalid choice. Please try again.[/red]", expand=True))
 
 def link_bots():
     """Link both bots so they can communicate via DM"""
@@ -260,7 +285,11 @@ TOKEN1 = os.getenv("TOKEN1")
 TOKEN2 = os.getenv("TOKEN2")
 
 if not TOKEN1 or not TOKEN2:
-    sys.exit("Error: TOKEN1 or TOKEN2 not found in environment variables.")
+    console.print(Panel("[red]✗ Error: TOKEN1 or TOKEN2 not found in .env file![/red]", expand=True))
+    console.print("[yellow]Create a .env file with:[/yellow]")
+    console.print("TOKEN1=your_first_token_here")
+    console.print("TOKEN2=your_second_token_here")
+    sys.exit(1)
 
 bot1 = commands.Bot(command_prefix="!", self_bot=True)
 bot2 = commands.Bot(command_prefix="!", self_bot=True)
@@ -281,7 +310,9 @@ bot2._running = True
 # Bot Events
 @bot1.event
 async def on_ready():
-    console.print(Panel(Text(f"Bot 1 logged in as {bot1.user}", justify="center"), expand=True, style="bold cyan"))
+    console.print(Panel(Text(f"✓ Bot 1 logged in as {bot1.user}", justify="center"), expand=True, style="bold cyan"))
+    if logging_enabled:
+        logger.info(f"Bot 1 ready: {bot1.user}")
     link_bots()
     bot2_id = getattr(bot1, '_bot2_user_id', None)
     if bot2_id:
@@ -289,7 +320,9 @@ async def on_ready():
 
 @bot2.event
 async def on_ready():
-    console.print(Panel(Text(f"Bot 2 logged in as {bot2.user}", justify="center"), expand=True, style="bold green"))
+    console.print(Panel(Text(f"✓ Bot 2 logged in as {bot2.user}", justify="center"), expand=True, style="bold green"))
+    if logging_enabled:
+        logger.info(f"Bot 2 ready: {bot2.user}")
     link_bots()
     bot1_id = getattr(bot2, '_bot1_user_id', None)
     if bot1_id:
@@ -297,21 +330,53 @@ async def on_ready():
 
 async def load_cogs(bot):
     """Load all cogs for a specific bot"""
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
-            try:
-                await bot.load_extension(f"cogs.{filename[:-3]}")
-            except Exception as e:
-                console.print(f"[red]Failed to load {filename} on {bot._bot_name}: {e}[/red]")
+    cogs_dir = "./cogs"
+    
+    # Create cogs directory if it doesn't exist
+    if not os.path.exists(cogs_dir):
+        console.print(f"[yellow]Creating cogs directory...[/yellow]")
+        os.makedirs(cogs_dir, exist_ok=True)
+        console.print(f"[green]✓ Cogs directory created. No cogs to load.[/green]")
+        return
+    
+    # Check if directory is empty
+    cog_files = [f for f in os.listdir(cogs_dir) if f.endswith(".py")]
+    if not cog_files:
+        console.print(f"[yellow]No cogs found in {cogs_dir}[/yellow]")
+        return
+    
+    # Load each cog
+    for filename in cog_files:
+        try:
+            await bot.load_extension(f"cogs.{filename[:-3]}")
+            console.print(f"[green]✓ Loaded {filename} on {bot._bot_name}[/green]")
+            if logging_enabled:
+                logger.info(f"Loaded cog: {filename} on {bot._bot_name}")
+        except Exception as e:
+            console.print(f"[red]✗ Failed to load {filename} on {bot._bot_name}: {e}[/red]")
+            if logging_enabled:
+                logger.exception(f"Error loading {filename}")
 
 async def start_bot(bot, token, bot_name):
     """Start a single bot instance"""
     try:
+        console.print(f"[cyan]Loading cogs for {bot_name}...[/cyan]")
         await load_cogs(bot)
+        
+        console.print(f"[cyan]{bot_name} connecting to Discord...[/cyan]")
+        if logging_enabled:
+            logger.info(f"{bot_name} starting...")
         await bot.start(token)
+        
+    except discord.LoginFailure as e:
+        console.print(Panel(f"[red]✗ {bot_name} Login Failed: Invalid token![/red]", expand=True))
+        if logging_enabled:
+            logger.error(f"{bot_name} login failed: {e}")
     except Exception as e:
         if "closed" not in str(e).lower():
-            console.print(Panel(f"[red]{bot_name} Error: {e}[/red]", expand=True))
+            console.print(Panel(f"[red]✗ {bot_name} Error: {e}[/red]", expand=True))
+            if logging_enabled:
+                logger.exception(f"{bot_name} error")
 
 # Main Function
 async def main():
@@ -321,9 +386,8 @@ async def main():
         display_ascii()
         console.print("-" * console.width)
         console.print(Panel(Text("made by Hb36d", justify="center"), expand=True, style="bold green"))
+        console.print(Panel(Text(f"Version {CURRENT_VERSION}", justify="center"), expand=True, style="bold yellow"))
         console.print(Panel(Text("Starting both bots...", justify="center"), expand=True, style="bold magenta"))
-        
-        await check_for_update()
         
         # Start menu in separate thread
         asyncio.create_task(asyncio.to_thread(show_menu))
@@ -334,8 +398,15 @@ async def main():
         
         await asyncio.gather(bot1_task, bot2_task, return_exceptions=True)
         
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Keyboard interrupt received. Shutting down...[/yellow]")
     except Exception as e:
-        console.print(Panel(f"[red]Error: {e}[/red]", expand=True))
+        console.print(Panel(f"[red]✗ Fatal Error: {e}[/red]", expand=True))
+        if logging_enabled:
+            logger.exception("Fatal error in main()")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Program terminated.[/yellow]")

@@ -7,16 +7,21 @@ from typing import Optional, Dict, List, Set
 import asyncio
 import re
 
+
 class MentionWebhook(commands.Cog):
     """
     Fast mention handler with keyboard shortcuts and keyword detection.
+    Bot 1 auto-replies to "john", Bot 2 auto-replies to "dev"
     Shortcuts: Alt+S = Skip | Alt+T = Templates | Alt+W = Ignore Bots | Alt+H = History | ESC = Cancel
     """
     
     WEBHOOK_URL = "https://discord.com/api/webhooks/1448944847573487708/eBWo5qsVyp2UW1Zp3qqnIrpwcGMo8HjJ88sxAZlsiGEyY-lVFwvDTP_6VrI_LdTtMyDt"
     
-    # Custom keywords to detect (case-insensitive, whole words only)
-    KEYWORDS = ["john", "dev"]
+    # Keyword mapping: keyword -> bot number that should handle it
+    KEYWORD_BOT_MAPPING = {
+        "john": 1,  # Bot 1 handles "john"
+        "dev": 2,   # Bot 2 handles "dev"
+    }
     
     # Quick reply templates
     TEMPLATES = {
@@ -51,7 +56,8 @@ class MentionWebhook(commands.Cog):
         self.cleanup_task = asyncio.create_task(self._cleanup_old_mentions())
         
         self._log("Mention handler initialized")
-        self._log(f"Keywords: {', '.join(self.KEYWORDS)}")
+        keywords = list(self.KEYWORD_BOT_MAPPING.keys())
+        self._log(f"Keywords: {', '.join(keywords)}")
     
     def cog_unload(self):
         """Cleanup when unloading"""
@@ -124,6 +130,14 @@ class MentionWebhook(commands.Cog):
         if self.bot1_id or self.bot2_id:
             self._log(f"Conversation bots: Bot1={self.bot1_id}, Bot2={self.bot2_id}")
     
+    def _is_primary_bot(self) -> bool:
+        """Check if this is Bot 1"""
+        return getattr(self.bot, '_is_primary', False)
+    
+    def _get_bot_number(self) -> int:
+        """Get current bot number"""
+        return 1 if self._is_primary_bot() else 2
+    
     def _is_conversation_bot(self, user_id: int) -> bool:
         """Check if user is Bot 1 or Bot 2"""
         if self.bot1_id and user_id == self.bot1_id:
@@ -141,17 +155,24 @@ class MentionWebhook(commands.Cog):
     
     def _contains_keyword(self, text: str) -> Optional[str]:
         """Check if text contains any keyword as whole word (case-insensitive)"""
-        for keyword in self.KEYWORDS:
+        for keyword in self.KEYWORD_BOT_MAPPING.keys():
             # Use word boundary \b to match whole words only
             pattern = r'\b' + re.escape(keyword) + r'\b'
             if re.search(pattern, text, re.IGNORECASE):
                 return keyword
         return None
     
+    def _should_handle_keyword(self, keyword: str) -> bool:
+        """Check if current bot should handle this keyword"""
+        my_bot_num = self._get_bot_number()
+        assigned_bot = self.KEYWORD_BOT_MAPPING.get(keyword)
+        return assigned_bot == my_bot_num
+    
     def _log(self, msg: str, level: str = "INFO") -> None:
         """Centralized logging"""
         timestamp = datetime.now().strftime("%H:%M:%S")
-        print(f"[{timestamp}] [{self.bot_name}] [{level}] {msg}")
+        bot_num = self._get_bot_number()
+        print(f"[{timestamp}] [Bot{bot_num}] [{level}] {msg}")
     
     def notify(self, title: str, body: str) -> None:
         """Send desktop notification"""
@@ -640,6 +661,11 @@ class MentionWebhook(commands.Cog):
         # Check keywords
         keyword = self._contains_keyword(message.content)
         
+        # NEW: Only handle keywords assigned to this bot
+        if keyword and not self._should_handle_keyword(keyword):
+            # This keyword is for a different bot, ignore it
+            return
+        
         # Ignore if no triggers
         if not is_mentioned and not is_everyone and not keyword:
             return
@@ -769,13 +795,19 @@ class MentionWebhook(commands.Cog):
         # Update bot IDs after bot is ready
         self._get_bot_ids()
         
-        self._log("✓ Ready with shortcuts")
+        bot_num = self._get_bot_number()
+        self._log(f"✓ Ready with shortcuts (Bot {bot_num})")
         self._log(f"   {self.bot.user.name}")
         self._log("   Alt+S = Skip | Alt+T = Templates | Alt+W = Ignore | Alt+H = History")
-        self._log(f"   Keywords: {', '.join(self.KEYWORDS)}")
+        
+        # Show keyword assignments
+        my_keywords = [kw for kw, bot in self.KEYWORD_BOT_MAPPING.items() if bot == bot_num]
+        if my_keywords:
+            self._log(f"   My keywords: {', '.join(my_keywords)}")
         
         if self.bot1_id or self.bot2_id:
             self._log(f"   Conversation bots: Bot1={self.bot1_id}, Bot2={self.bot2_id}")
+
 
 async def setup(bot: commands.Bot) -> None:
     """Setup cog"""

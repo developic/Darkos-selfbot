@@ -7,6 +7,7 @@ from datetime import datetime
 import random
 from typing import Optional, Dict, List
 
+
 class AutoConversation(commands.Cog):
     """Automated conversation system with multiple channels"""
     
@@ -143,7 +144,8 @@ class AutoConversation(commands.Cog):
         """Log to terminal"""
         config = self._load_config()
         if config.get("log_to_terminal", True):
-            print(message)
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            print(f"[{timestamp}] {message}")
     
     def _calculate_typing_delay(self, config: Dict) -> float:
         """Calculate random typing delay"""
@@ -356,6 +358,23 @@ class AutoConversation(commands.Cog):
         self.slowdown_active = False
         self._log("⏹️ Stopped")
     
+    @conv_group.command(name="status")
+    async def conv_status(self, ctx):
+        """
+        Show conversation status
+        Usage: !conv status
+        """
+        state = self._load_state()
+        if not state or not state.get("active"):
+            self._log("📭 No active conversation")
+            return
+        
+        current = state.get("current_index", 0)
+        total = state.get("total_messages", 0)
+        conv_name = state.get("conversation_name", "Unknown")
+        
+        self._log(f"📊 Status: '{conv_name}' - {current}/{total} messages")
+    
     # ==================== CONFIG COMMANDS ====================
     
     @commands.command(name="reloadconfig")
@@ -370,7 +389,7 @@ class AutoConversation(commands.Cog):
         config = self._load_config()
         bot_num = self._get_bot_number()
         
-        self._log(f"\n⚙️ Bot {bot_num} Config:")
+        self._log(f"\n⚙️ Bot {self._get_bot_number()} Config:")
         self._log(f"📁 Config: {self.config_file}")
         self._log(f"📂 Conversations: {self.conversations_dir}/")
         
@@ -419,16 +438,19 @@ class AutoConversation(commands.Cog):
             conv = self.conversations[conv_name]
             index = state.get("current_index", 0)
             
-            # Check if conversation ended
+            # Check if conversation ended - FIXED: Stop properly
             if index >= len(conv):
+                conv_name = state.get("conversation_name")
+                total_messages = len(conv)
                 self._clear_state()
                 self.slowdown_active = False
-                self._log(f"✅ Completed '{conv_name}' ({len(conv)} messages)")
-                return
+                self._log(f"✅ Completed '{conv_name}' ({total_messages} messages)")
+                return  # This will stop further execution
             
             current = conv[index]
             if current["bot"] != my_bot:
                 state["current_index"] = index + 1
+                state["next_bot"] = conv[index + 1]["bot"] if index + 1 < len(conv) else None
                 self._save_state(state)
                 return
             
@@ -501,7 +523,16 @@ class AutoConversation(commands.Cog):
                 
                 # Update state
                 next_index = index + 1
-                next_bot = conv[next_index]["bot"] if next_index < len(conv) else None
+                
+                # Check if this was the last message
+                if next_index >= len(conv):
+                    # Conversation complete
+                    self._clear_state()
+                    self.slowdown_active = False
+                    self._log(f"🎉 Bot {my_bot}: Conversation '{conv_name}' finished!")
+                    return
+                
+                next_bot = conv[next_index]["bot"]
                 
                 state.update({
                     "current_index": next_index,
@@ -538,6 +569,7 @@ class AutoConversation(commands.Cog):
     async def before_monitor(self):
         """Wait for bot ready"""
         await self.bot.wait_until_ready()
+
 
 async def setup(bot):
     await bot.add_cog(AutoConversation(bot))

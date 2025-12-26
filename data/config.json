@@ -3,8 +3,8 @@
     "ntts": 1449481185154830506,
     "test": 1448274381762727979
   },
-  "typing_delay_min": 7.0,
-  "typing_delay_max": 8.0,
+  "typing_delay_min": 8.0,
+  "typing_delay_max": 10.0,
   "slowdown_delay": 10,
   "enable_typing_indicator": true,
   "enable_reply_chains": true,
