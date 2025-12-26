@@ -1,0 +1,48 @@
+[
+  [
+    {
+      "action": "pause",
+      "duration": [
+        25,
+        40
+      ],
+      "reason": "natural break"
+    },
+    {
+      "bot": 2,
+      "msg": "btw did u finish that thing u were working on?"
+    }
+  ],
+  [
+    {
+      "action": "pause",
+      "duration": [
+        20,
+        35
+      ],
+      "reason": "thinking"
+    },
+    {
+      "bot": 1,
+      "msg": "anyway"
+    },
+    {
+      "bot": 1,
+      "msg": "completely random but did u see that video yesterday"
+    }
+  ],
+  [
+    {
+      "action": "pause",
+      "duration": [
+        30,
+        45
+      ],
+      "reason": "break"
+    },
+    {
+      "bot": 2,
+      "msg": "oh yeah i wanted to ask u something"
+    }
+  ]
+]

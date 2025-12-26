@@ -1,36 +1,6 @@
 [
   {
-    "bot": 1,
-    "msg": "yooo"
-  },
-  {
-    "bot": 2,
-    "action": "typing_only",
-    "duration": [
-      4,
-      6
-    ]
-  },
-  {
-    "bot": 2,
-    "msg": "hey whats up"
-  },
-  {
-    "bot": 1,
-    "msg": "not much just chilling"
-  },
-  {
-    "bot": 1,
-    "msg": "u wanna hear somethign funny",
-    "edit_after": [
-      2,
-      4
-    ],
-    "edit_to": "u wanna hear something funny"
-  },
-  {
-    "bot": 2,
-    "msg": "sure lol"
+    "template": "story_intro"
   },
   {
     "action": "pause",
@@ -69,9 +39,7 @@
     "msg": "NOOO 💀💀"
   },
   {
-    "bot": 1,
-    "action": "react",
-    "emoji": "😂"
+    "template": "agreement_sequence"
   },
   {
     "bot": 1,
@@ -82,20 +50,7 @@
     "msg": "i would have died 😭"
   },
   {
-    "bot": 1,
-    "msg": "fr tho"
-  },
-  {
-    "action": "pause",
-    "duration": [
-      25,
-      40
-    ],
-    "reason": "natural break"
-  },
-  {
-    "bot": 2,
-    "msg": "btw did u finish that thing u were working on?"
+    "template": "topic_change"
   },
   {
     "bot": 1,

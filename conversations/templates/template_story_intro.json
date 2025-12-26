@@ -1,0 +1,51 @@
+[
+  [
+    {
+      "bot": 1,
+      "msg": "yooo"
+    },
+    {
+      "bot": 2,
+      "action": "typing_only",
+      "duration": [
+        4,
+        6
+      ]
+    },
+    {
+      "bot": 2,
+      "msg": "hey whats up"
+    },
+    {
+      "bot": 1,
+      "msg": "not much just chilling"
+    },
+    {
+      "bot": 1,
+      "msg": "u wanna hear something funny",
+      "edit_after": [
+        2,
+        4
+      ],
+      "edit_to": "u wanna hear something funny"
+    },
+    {
+      "bot": 2,
+      "msg": "sure lol"
+    }
+  ],
+  [
+    {
+      "bot": 1,
+      "msg": "brooo"
+    },
+    {
+      "bot": 2,
+      "msg": "what"
+    },
+    {
+      "bot": 1,
+      "msg": "i gotta tell u something"
+    }
+  ]
+]

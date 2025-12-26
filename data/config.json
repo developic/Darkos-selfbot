@@ -8,8 +8,22 @@
   "slowdown_delay": 10,
   "enable_typing_indicator": true,
   "enable_reply_chains": true,
+  "reply_chain_break_chance": 0.3,
   "auto_recover_from_ratelimit": true,
   "log_to_terminal": true,
   "show_typing_logs": true,
-  "show_message_preview_length": 50
+  "show_message_preview_length": 50,
+  "natural_behavior": {
+    "enable_random_pauses": true,
+    "pause_chance": 0.08,
+    "pause_min": 15,
+    "pause_max": 45,
+    "typing_variance": 0.25,
+    "enable_overlap_messages": true,
+    "overlap_chance": 0.12,
+    "enable_typo_simulation": true,
+    "typo_chance": 0.05,
+    "enable_typing_interruption": true,
+    "typing_interruption_chance": 0.03
+  }
 }
